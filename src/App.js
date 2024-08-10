@@ -3,6 +3,8 @@ import Banner from './componentes/Banner/Banner';
 import Formulario from './componentes/Formulario';
 import Time from './componentes/Time';
 import Rodape from './componentes/Rodape';
+import { RiChat2Line } from "react-icons/ri";
+
 
 function App() {
 
@@ -44,16 +46,36 @@ function App() {
     },
   ]
 
-  const [colaboradores, setColaboradores] = useState([])
+  const [colaboradores, setColaboradores] = useState([]);
+  const [formularioVisivel, setFormularioVisivel] = useState(true);
 
   const aoNovoColaboradorAdicionado = (colaborador) => {
     setColaboradores([...colaboradores, colaborador])
   }
 
+  const botaoFormulario = () => {
+    setFormularioVisivel(!formularioVisivel);
+  }
+
+  const estiloBotao = {
+   marginLeft: '70%',
+   cursor: 'pointer'
+  }
+
+  
   return (
     <div className="App">
       <Banner />
-      <Formulario times={times.map(time => time.nome)} aoColaboradorCadastrado={colaborador => aoNovoColaboradorAdicionado(colaborador)}/>
+      
+      {formularioVisivel && ( 
+      <Formulario 
+      times={times.map(time => time.nome)} 
+      aoColaboradorCadastrado={colaborador => aoNovoColaboradorAdicionado(colaborador)}
+      />
+      )}
+
+      <RiChat2Line size={25} onClick={botaoFormulario} style={estiloBotao} /> 
+
         {times.map(time => <Time 
         key={time.nome} 
         nome={time.nome} 
@@ -61,6 +83,8 @@ function App() {
         corSecundaria={time.corSecundaria}
         colaboradores={colaboradores.filter(colaborador => colaborador.time === time.nome)}
         /> )}
+
+        
 
         <Rodape />
 

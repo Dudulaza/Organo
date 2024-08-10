@@ -26,6 +26,7 @@ const Formulario = (props) => {
         setTime('')
     }
 
+
     return (
         <section className='formulario'>
             <form onSubmit={aoSalvar}>
