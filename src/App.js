@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Banner from './componentes/Banner/Banner';
 import Formulario from './componentes/Formulario';
 import Time from './componentes/Time';
@@ -48,6 +48,14 @@ function App() {
 
   const [colaboradores, setColaboradores] = useState([]);
   const [formularioVisivel, setFormularioVisivel] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:8080/pessoas')
+    .then(resposta => resposta.json())
+    .then(dados =>{
+      setColaboradores(dados);
+    })
+  }, []) 
 
   const aoNovoColaboradorAdicionado = (colaborador) => {
     setColaboradores([...colaboradores, colaborador])
