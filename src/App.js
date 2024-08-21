@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
+// import React, { useEffect } from 'react';
+import React, {  useReducer } from 'react';
+import { appReducer, EstadoInicial, acaoTipos } from './reducer.js';
 import Banner from './componentes/Banner/Banner';
 import Formulario from './componentes/Formulario';
 import Time from './componentes/Time';
 import Rodape from './componentes/Rodape';
 import { RiChat2Line } from "react-icons/ri";
 
-
 function App() {
-
   const times = [
     {
       nome: 'Programação',
@@ -44,58 +44,59 @@ function App() {
       corPrimaria: '#FF8A29',
       corSecundaria: '#FFEEDF'
     },
-  ]
+  ];
 
-  const [colaboradores, setColaboradores] = useState([]);
-  const [formularioVisivel, setFormularioVisivel] = useState(true);
+  // PARA PEGAR COLABORADORES DE UMA JSONAPI
 
-  useEffect(() => {
-    fetch('http://localhost:8080/pessoas')
-    .then(resposta => resposta.json())
-    .then(dados =>{
-      setColaboradores(dados);
-    })
-  }, []) 
+  // useEffect(() => {
+  //   fetch('http://localhost:8080/pessoas')
+  //     .then(resposta => resposta.json())
+  //     .then(dados => {
+  //       dados.forEach(colaborador => {
+  //         dispatch({ tipo: acaoTipos.ADD_COLABORADOR, payload: colaborador });
+  //       });
+  //     });
+  // }, []); 
+
+  const [estado, dispatch] = useReducer(appReducer, EstadoInicial);
 
   const aoNovoColaboradorAdicionado = (colaborador) => {
-    setColaboradores([...colaboradores, colaborador])
-  }
+    dispatch({ tipo: acaoTipos.ADD_COLABORADOR, payload: colaborador });
+  };
 
   const botaoFormulario = () => {
-    setFormularioVisivel(!formularioVisivel);
-  }
+    dispatch({ tipo: acaoTipos.VISAO_FORMULARIO });
+  };
 
   const estiloBotao = {
-   marginLeft: '70%',
-   cursor: 'pointer'
-  }
+    marginLeft: '70%',
+    cursor: 'pointer'
+  };
 
-  
   return (
     <div className="App">
       <Banner />
-      
-      {formularioVisivel && ( 
-      <Formulario 
-      times={times.map(time => time.nome)} 
-      aoColaboradorCadastrado={colaborador => aoNovoColaboradorAdicionado(colaborador)}
-      />
+
+      {estado.formularioVisivel && (
+        <Formulario 
+          times={times.map(time => time.nome)} 
+          aoColaboradorCadastrado={colaborador => aoNovoColaboradorAdicionado(colaborador)}
+        />
       )}
 
       <RiChat2Line size={25} onClick={botaoFormulario} style={estiloBotao} /> 
 
-        {times.map(time => <Time 
-        key={time.nome} 
-        nome={time.nome} 
-        corPrimaria={time.corPrimaria} 
-        corSecundaria={time.corSecundaria}
-        colaboradores={colaboradores.filter(colaborador => colaborador.time === time.nome)}
-        /> )}
+      {times.map(time => (
+        <Time 
+          key={time.nome} 
+          nome={time.nome} 
+          corPrimaria={time.corPrimaria} 
+          corSecundaria={time.corSecundaria}
+          colaboradores={estado.colaboradores.filter(colaborador => colaborador.time === time.nome)}
+        /> 
+      ))}
 
-        
-
-        <Rodape />
-
+      <Rodape />
     </div>
   );
 }
